@@ -1,4 +1,5 @@
 DROP TRIGGER IF EXISTS RemoveWaitlistAfterEnroll;
+DROP TRIGGER IF EXISTS after_user_insert;
 
 DROP PROCEDURE IF EXISTS EnrollStudent;
 DROP PROCEDURE IF EXISTS DropStudent;
