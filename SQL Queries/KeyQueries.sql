@@ -29,7 +29,6 @@ INNER JOIN Students s WHERE e.student_id = s.student_id
 INNER JOIN Courses c WHERE s.student_id = c.student_id
 WHERE e.student_id = ?
 
-
 /*
 Stored Procedures
 */
@@ -114,7 +113,7 @@ DELIMITER ;
 /* Trigger to make sure no enrolled students are also on the waitlist */
 DELIMITER $$
 
-CREATE TRIGGER Remove_Waitlist_After_Enroll
+CREATE TRIGGER RemoveWaitlistAfterEnroll
 AFTER INSERT ON Enrollments
 FOR EACH ROW
 BEGIN

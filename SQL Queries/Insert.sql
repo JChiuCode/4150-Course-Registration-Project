@@ -26,3 +26,4 @@ INSERT INTO Sections (instructor_id, course_id, location, semester, capacity, st
 
 INSERT INTO Enrollments (student_id, section_id) VALUES
 (1, 2), (2, 2), (3, 2), (4, 2);
+
