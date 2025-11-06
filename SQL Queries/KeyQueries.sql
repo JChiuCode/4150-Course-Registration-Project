@@ -5,7 +5,7 @@ Key Queries
 --Retrieve all courses and their selections
 SELECT c.course_name, c.course_description, s.selection_id, s.semester, s.location, s.capacity
 FROM Courses c
-INNER JOIN Sections s ON c.course_id = s.section_id;
+INNER JOIN Sections s ON c.course_id = s.course_id;
 
 --Get all students from a section
 SELECT u.first_name, u.last_name
@@ -25,9 +25,36 @@ ORDER BY w.joined_at ASC;
 --Get a students current courses. Formatted as name, semester, day, start time, end time
 SELECT c.course_name, s.semester, s.days, s.start_time, s.end_time
 FROM Enrollments e
-INNER JOIN Students s WHERE e.student_id = s.student_id
-INNER JOIN Courses c WHERE s.student_id = c.student_id
+INNER JOIN Students s ON e.student_id = s.student_id
+INNER JOIN Courses c ON s.student_id = c.student_id
 WHERE e.student_id = ?
+
+--Select the prerequisites of a course
+SELECT c.course_name AS prerequisite_name
+FROM Prerequisites p
+INNER JOIN Courses c ON p.prerequisite_id = c.course_id
+WHERE p.course_id = 1;
+
+--Filter by course name or description
+SELECT * FROM Courses
+WHERE course_name LIKE '%example%' 
+   OR course_description LIKE '%example%';
+   
+--Filter by semester
+SELECT c.course_name, c.course_description, s.section_id, s.days, s.start_time, s.end_time, u.last_name AS instructor
+FROM Courses c
+INNER JOIN Sections s ON c.course_id = s.course_id
+LEFT JOIN Instructors i ON s.instructor_id = i.instructor_id
+LEFT JOIN Users u ON i.instructor_id = u.user_id
+WHERE s.semester = 'W2025';
+
+--Filter by open seats
+SELECT c.course_name, s.section_id, (s.capacity - COUNT(e.enrollment_id)) as seats_remaining
+FROM Sections s
+JOIN Courses c ON s.course_id = c.course_id
+LEFT JOIN Enrollments e ON s.section_id = e.section_id
+GROUP BY s.section_id
+HAVING seats_remaining > 0;
 
 /*
 Stored Procedures
