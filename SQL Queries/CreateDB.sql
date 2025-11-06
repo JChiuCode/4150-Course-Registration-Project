@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS Sections(
     instructor_id INT,
     course_id INT NOT NULL,
     location VARCHAR(100) NOT NULL,
-    semester VARCHAR(10) NOT NULL CHECK (semester REGEXP '^[FS][0-9]{4}$'), /*stored in format like W2025 or F2019*/
+    semester VARCHAR(10) NOT NULL CHECK (semester REGEXP '^[FSW][0-9]{4}$'), /*stored in format like W2025 or F2019*/
     capacity INT NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
