@@ -173,7 +173,7 @@ BEGIN
         VALUES (NEW.user_id);
     
     -- If the inserted user's role is 'administrator', insert into Administrators
-    ELSEIF NEW.role = 'admin' THEN
+    ELSEIF NEW.role = 'administrator' THEN
         INSERT INTO Administrators (admin_id)
         VALUES (NEW.user_id);
     END IF;
