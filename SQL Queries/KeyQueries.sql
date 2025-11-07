@@ -141,6 +141,28 @@ END $$
 
 DELIMITER ;
 
+/* Gets all course and section info for the course table*/
+DELIMITER $$
+
+CREATE PROCEDURE GetCourseTableInformation(IN input_course_name VARCHAR(100))
+BEGIN
+	IF input_course_name IS NOT NULL THEN 
+        SELECT C.course_id, course_name, course_description, location, capacity, days, start_time, end_time, section_id, CONCAT(first_name, " ", last_name) AS instructor_name, CONCAT( start_time, " - " , end_time)     AS duration, credits
+        FROM courses C
+        INNER JOIN sections s ON C.course_id = S.course_id
+        INNER JOIN users U on U.user_id = S.instructor_id
+        WHERE course_name = input_course_name
+        ORDER BY course_name;
+    ELSE
+        SELECT C.course_id, course_name, course_description, location, capacity, days, start_time, end_time, section_id, CONCAT(first_name, " ", last_name) AS instructor_name, CONCAT( start_time, " - " , end_time)     AS duration, credits
+        FROM courses C
+        INNER JOIN sections s ON C.course_id = S.course_id
+        INNER JOIN users U on U.user_id = S.instructor_id
+        ORDER BY course_name;
+   	END IF;
+END $$
+
+DELIMITER ;
 /* Trigger to make sure no enrolled students are also on the waitlist */
 DELIMITER $$
 

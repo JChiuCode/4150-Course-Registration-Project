@@ -58,9 +58,7 @@
         </div>
     </div>
     
-    <footer>
-        <h6>Group #1 - (Aaron Sinn, Jonathan Chiu, Jackie Li, Jacky Zhu)</h6>
-    </footer>
+    <?php require_once("./templates/footer.php"); ?>
 </body>
 </html>
 
@@ -117,6 +115,13 @@ require_once './db.php';
 
     $query_insert_user->execute();
     $query_insert_user->close();
+
+    // Get the new user_id
+    $query_get_new_id = "SELECT user_id FROM Users WHERE email = '$email'";
+    $result = $conn->query($query_get_new_id);
+    $row = $result->fetch_assoc();
+
+    $_SESSION['user_id'] = $row['user_id'];
   }
   catch(Exception $e){
     echo $e;

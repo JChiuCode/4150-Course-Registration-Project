@@ -1,0 +1,33 @@
+.wrapper-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title-container{
+    width: 80%;
+    margin-top: 3em;
+    text-align: center;
+}
+
+.search-container{
+    margin: 1em; 
+    width: 80%;
+}
+
+.form-container{
+    width: 100%;   
+}
+
+#searchInput{
+    margin-right: 1em;
+}
+
+.table-container{
+    width: 80%;
+}
+
+#resetButton{
+    margin-left: 1em;
+    color: white;
+}

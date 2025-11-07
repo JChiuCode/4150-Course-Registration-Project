@@ -53,9 +53,7 @@
         </div>
     </div>
 
-    <footer>
-        <h6>Group #1 - (Aaron Sinn, Jonathan Chiu, Jackie Li, Jacky Zhu)</h6>
-    </footer>
+    <?php require_once("./templates/footer.php"); ?>
 </body>
 </html>
 
@@ -90,11 +88,20 @@
     $row = $result->fetch_assoc();
     $db_password = $row["password"];
 
+    // Check if the entered password matches the one in the DB
     if($password == $db_password || password_verify($password, $db_password)){
       $_SESSION["email"] = $email;
       $_SESSION["first_name"] = $row["first_name"];;
       $_SESSION["last_name"] = $row["last_name"];
       $_SESSION["role"] = $row["role"];
+
+      // Get the user_id
+      $query_get_new_id = "SELECT user_id FROM Users WHERE email = '$email'";
+      $result = $conn->query($query_get_new_id);
+      $row = $result->fetch_assoc();
+
+      $_SESSION['user_id'] = $row['user_id'];
+
       header("Location: ./home.php");
       exit();
     }
