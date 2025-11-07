@@ -7,6 +7,20 @@
   if($_SESSION == []){
     header("Location: ./logout.php");
   }
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous" ></script>
+
+  <link rel="stylesheet" href="./css/home.css">
+</head>
+
+<?php
 
   // If the user added a course
   if(isset($_POST["section_id"])){
@@ -41,8 +55,8 @@
     $stmt = $conn->prepare("CALL GetCourseTableInformation(?);");
     $stmt->bind_param("s", $_GET["searchInput"]);
     $stmt->execute();
-    $stmt->close();
     $result = $stmt->get_result();
+    $stmt->close();
   }
   else{
     // Gets all courses
@@ -51,18 +65,6 @@
   }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home Page</title>
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous" ></script>
-
-  <link rel="stylesheet" href="./css/home.css">
-</head>
 <body>
   <?php require_once('./templates/header.php'); ?>
   <div class="wrapper-container">
@@ -108,7 +110,7 @@
                 <td><?php echo $row['credits']; ?></td>
                 <td><form action="home.php" method="post">
                   <button type="submit" class="btn btn-success" <?php if($_SESSION['role'] != 'student'){echo "disabled";}?>>Add</button> <!-- Only students can add courses -->
-                  <input type='hidden' name='section_id' value=<?php echo $row['section_id'];?>>
+                  <input type='hidden' name='section_id' value=<?php echo $row['section_id'];?>> <!-- sends the section_id in the POST request -->
                 </form></td>
               </tr>
           <?php endwhile; ?>
