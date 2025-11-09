@@ -4,6 +4,7 @@ DROP TRIGGER IF EXISTS after_user_insert;
 DROP PROCEDURE IF EXISTS EnrollStudent;
 DROP PROCEDURE IF EXISTS DropStudent;
 DROP PROCEDURE IF EXISTS GetFirstWaitlistedStudent;
+DROP PROCEDURE IF EXISTS GetCourseTableInformation;
 
 DROP TABLE IF EXISTS Enrollments;
 DROP TABLE IF EXISTS Waitlist;
