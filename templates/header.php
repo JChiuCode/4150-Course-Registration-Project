@@ -11,11 +11,21 @@
         <li class="nav-item">
           <a class="nav-link <?php echo ($current_page == 'home.php') ? 'active' : ''; ?>" href="./home.php">Courses</a>
         </li>
+
+        <?php if ($_SESSION['role'] == 'student' || $_SESSION['role'] == 'instructor') : ?>
         <li class="nav-item">
           <a class="nav-link <?php echo ($current_page == 'mycourses.php') ? 'active' : ''; ?>" href="./mycourses.php">My Courses</a>
         </li>
+        <?php endif; ?>
+
+        <li class="nav-item">
+          <a class="nav-link <?php echo ($current_page == 'waitlists.php') ? 'active' : ''; ?>" href="./waitlists.php">Waitlists</a>
+        </li>
 
         <?php if ($_SESSION['role'] == 'administrator') : ?>
+          <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'enrollments.php') ? 'active' : ''; ?>" href="./enrollments.php">Enrollments</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link <?php echo ($current_page == 'users.php') ? 'active' : ''; ?>" href="./users.php">Users</a>
           </li>

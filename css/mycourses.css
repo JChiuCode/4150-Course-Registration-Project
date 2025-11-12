@@ -12,12 +12,8 @@
 .title-container{
     width: 80%;
     margin-top: 3em;
+    margin-bottom: 1em;
     text-align: center;
-}
-
-.search-container{
-    margin: 1em; 
-    width: 80%;
 }
 
 .form-container{

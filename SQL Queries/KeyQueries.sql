@@ -167,6 +167,132 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+/* Gets all course for a student_id */
+DELIMITER $$
+
+CREATE PROCEDURE GetCoursesByStudentID(IN input_student_id INT)
+BEGIN
+    SELECT C.course_id, C.course_name, C.course_description, S.location, S.days, CONCAT(S.start_time, ' - ', S.end_time) AS duration, S.section_id, CONCAT(U.first_name, ' ', U.last_name) AS instructor_name, C.credits, CONCAT(COUNT(E.student_id), '/', S.capacity) AS capacity
+    FROM courses C
+    INNER JOIN sections S ON C.course_id = S.course_id
+    LEFT JOIN enrollments E ON S.section_id = E.section_id
+    LEFT JOIN instructors I ON S.instructor_id = I.instructor_id
+    LEFT JOIN users U ON I.instructor_id = U.user_id
+    WHERE S.section_id IN (
+        SELECT section_id 
+        FROM enrollments 
+        WHERE student_id = input_student_id
+        )
+    GROUP BY 
+    C.course_id, C.course_name, C.course_description, S.location, S.days, S.start_time, S.end_time, S.section_id, S.capacity, U.first_name, U.last_name, C.credits
+    ORDER BY C.course_name;
+END $$
+
+DELIMITER ;
+
+/* Gets all course for a instructor_id */
+DELIMITER $$
+
+CREATE PROCEDURE GetCoursesByInstructorID(IN input_instructor_id INT)
+BEGIN
+    SELECT C.course_id, C.course_name, C.course_description, S.location, S.days, S.start_time, S.end_time, S.section_id, CONCAT(U.first_name, ' ', U.last_name) AS instructor_name, CONCAT(S.start_time, ' - ', S.end_time) AS duration, C.credits, CONCAT(COUNT(E.student_id), '/', S.capacity) AS capacity
+    FROM courses C
+    INNER JOIN sections S ON C.course_id = S.course_id
+    INNER JOIN users U ON U.user_id = S.instructor_id
+    LEFT JOIN enrollments E ON S.section_id = E.section_id
+    WHERE S.instructor_id = input_instructor_id
+    GROUP BY C.course_id, C.course_name, C.course_description, S.location, S.capacity, S.days, S.start_time, S.end_time, S.section_id, U.first_name, U.last_name, C.credits
+    ORDER BY C.course_name;
+END $$
+
+DELIMITER ;
+
+/* Get Waitist information by student_id */
+DELIMITER $$
+
+CREATE PROCEDURE GetWaitlistForStudentID(IN input_student_id INT)
+BEGIN
+    SELECT 
+        C.course_id, C.course_name, C.course_description, S.location, S.days, S.start_time, S.end_time, S.section_id, CONCAT(U.first_name, ' ', U.last_name) AS instructor_name, CONCAT(S.start_time, ' - ', S.end_time) AS duration, C.credits, wl_position.position AS `position`, W.student_id
+    FROM Waitlist W
+    JOIN Sections S ON W.section_id = S.section_id
+    JOIN Courses C ON S.course_id = C.course_id
+    LEFT JOIN Instructors I ON S.instructor_id = I.instructor_id
+    LEFT JOIN Users U ON I.instructor_id = U.user_id
+    JOIN (
+        SELECT 
+            W1.waitlist_id,
+            COUNT(*) AS position
+        FROM Waitlist W1
+        JOIN Waitlist W2
+            ON W1.section_id = W2.section_id 
+            AND W2.joined_at <= W1.joined_at
+        GROUP BY W1.waitlist_id
+    ) AS wl_position ON W.waitlist_id = wl_position.waitlist_id
+    WHERE W.student_id = input_student_id
+    ORDER BY s.semester, c.course_name;
+END $$
+
+DELIMITER ;
+
+/* Get Waitist information by instructor_id */
+DELIMITER $$
+
+CREATE PROCEDURE GetWaitlistForInstructorID(IN input_instructor_id INT)
+BEGIN
+    SELECT 
+        C.course_id, C.course_name, U2.first_name, U2.last_name, wl_position.position AS `position`, S.location, S.days, S.start_time, S.end_time, S.section_id, CONCAT(U.first_name, ' ', U.last_name) AS instructor_name, CONCAT(S.start_time, ' - ', S.end_time) AS duration, C.credits,  W.student_id
+    FROM Waitlist W
+    JOIN Sections S ON W.section_id = S.section_id
+    JOIN Courses C ON S.course_id = C.course_id
+    LEFT JOIN Instructors I ON S.instructor_id = I.instructor_id
+    LEFT JOIN Users U ON I.instructor_id = U.user_id
+    LEFT JOIN Users U2 ON W.student_id = U2.user_id
+    JOIN (
+        SELECT 
+            W1.waitlist_id,
+            COUNT(*) AS position
+        FROM Waitlist W1
+        JOIN Waitlist W2
+            ON W1.section_id = W2.section_id 
+            AND W2.joined_at <= W1.joined_at
+        GROUP BY W1.waitlist_id
+    ) AS wl_position ON W.waitlist_id = wl_position.waitlist_id
+    WHERE S.instructor_id = input_instructor_id
+    ORDER BY s.semester, c.course_name;
+END $$
+
+DELIMITER ;
+
+/* Get Waitist for Everyone */
+DELIMITER $$
+
+CREATE PROCEDURE GetWaitlistForEveryone()
+BEGIN
+    SELECT 
+        C.course_id, C.course_name, U2.first_name, U2.last_name, wl_position.position AS `position`, S.location, S.days, S.start_time, S.end_time, S.section_id, CONCAT(U.first_name, ' ', U.last_name) AS instructor_name, CONCAT(S.start_time, ' - ', S.end_time) AS duration, C.credits, W.student_id
+    FROM Waitlist W
+    JOIN Sections S ON W.section_id = S.section_id
+    JOIN Courses C ON S.course_id = C.course_id
+    LEFT JOIN Instructors I ON S.instructor_id = I.instructor_id
+    LEFT JOIN Users U ON I.instructor_id = U.user_id
+    LEFT JOIN Users U2 ON W.student_id = U2.user_id
+    JOIN (
+        SELECT 
+            W1.waitlist_id,
+            COUNT(*) AS position
+        FROM Waitlist W1
+        JOIN Waitlist W2
+            ON W1.section_id = W2.section_id 
+            AND W2.joined_at <= W1.joined_at
+        GROUP BY W1.waitlist_id
+    ) AS wl_position ON W.waitlist_id = wl_position.waitlist_id
+    ORDER BY s.semester, c.course_name;
+END $$
+
+DELIMITER ;
+
 /* Trigger to make sure no enrolled students are also on the waitlist */
 DELIMITER $$
 
