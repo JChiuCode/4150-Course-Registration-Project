@@ -23,10 +23,10 @@
 <?php
 
   // If the user added a course
-  if(isset($_POST["section_id"])){
+  if(isset($_POST["add_section_id"])){
 
     $user_id = intval($_SESSION['user_id']);
-    $section_id = intval($_POST['section_id']);
+    $section_id = intval($_POST['add_section_id']);
     $auto_add = 1;
 
     // Check is user is already in course
@@ -51,6 +51,28 @@
       echo "<script type='text/javascript'>alert('$message');</script>";
     }
     
+  }
+
+  if(isset($_POST["remove_section_id"])){
+
+    $section_id = intval($_POST['remove_section_id']);
+
+    // Delete course
+    $stmt = $conn->prepare("DELETE FROM Sections WHERE section_id = ?");
+    $stmt->bind_param("i", $section_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    
+    if($result){
+      $message = "Section deleted!";
+      echo "<script type='text/javascript'>alert('$message');</script>";
+    }
+    else{
+      $message = "Section could not be deleted!";
+      echo "<script type='text/javascript'>alert('$message');</script>";
+    }
+    $stmt->close(); 
   }
 
   // If the user entered something in the search bar
@@ -101,7 +123,12 @@
           <th scope="col">Duration</th>
           <th scope="col">Instructor</th>
           <th scope="col">Credits</th>
+          <?php if($_SESSION['role'] == 'student' || $_SESSION['role'] == 'instructor'): ?>
           <th scope="col">Add</th>
+          <?php endif; ?>
+          <?php if($_SESSION['role'] == 'administrator'): ?>
+          <th scope="col">Remove</th>
+          <?php endif; ?>
         </tr>
       </thead>
       <tbody>
@@ -116,11 +143,23 @@
                 <td><?php echo $row['duration']; ?></td>
                 <td><?php echo $row['instructor_name']; ?></td>
                 <td><?php echo $row['credits']; ?></td>
+
+                <?php if($_SESSION['role'] == 'student' || $_SESSION['role'] == 'instructor'): ?>
                 <td><form action="home.php" method="post">
                   <button type="submit" class="btn btn-success" <?php if($_SESSION['role'] != 'student'){echo "disabled";}?>>Add</button> <!-- Only students can add courses -->
-                  <input type='hidden' name='section_id' value=<?php echo $row['section_id'];?>> <!-- sends the section_id in the POST request -->
+                  <input type='hidden' name='add_section_id' value=<?php echo $row['section_id'];?>> <!-- sends the section_id in the POST request -->
                 </form></td>
+                <?php endif; ?>
+
+                  <!-- Only admins can see the delete option -->
+                <?php if($_SESSION['role'] == 'administrator'): ?>
+                <td><form action="home.php" method="post">
+                  <button type="submit" class="btn btn-danger">Remove</button> <!-- Only students can add courses -->
+                  <input type='hidden' name='remove_section_id' value=<?php echo $row['section_id'];?>> <!-- sends the section_id in the POST request -->
+                </form></td>
+
               </tr>
+              <?php endif; ?>
           <?php endwhile; ?>
         <?php else: ?>
           <tr>
