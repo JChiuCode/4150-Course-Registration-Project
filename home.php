@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
   session_start();
 
   require_once("./db.php");
@@ -76,18 +78,24 @@
   }
 
   // If the user entered something in the search bar
-  if(isset($_GET["searchInput"])){
+  if(isset($_GET["searchInput"]) && !empty($_GET["searchInput"])){
+    $searchInput = $_GET["searchInput"];
     $stmt = $conn->prepare("CALL GetCourseTableInformation(?);");
-    $stmt->bind_param("s", $_GET["searchInput"]);
+    $stmt->bind_param("s", $searchInput);
     $stmt->execute();
     $result = $stmt->get_result();
     $stmt->close();
   }
   else{
-    // Gets all courses
-    $stmt = "CALL GetCourseTableInformation(NULL);";
-    $result = $conn->query($stmt);
+    // Gets all courses - use empty string instead of NULL
+    $stmt = $conn->prepare("CALL GetCourseTableInformation(?);");
+    $empty = "";
+    $stmt->bind_param("s", $empty);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
   }
+
 ?>
 
 <body>

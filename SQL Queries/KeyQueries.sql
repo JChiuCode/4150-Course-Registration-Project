@@ -3,7 +3,7 @@ Key Queries
 */
 
 --Retrieve all courses and their selections
-SELECT c.course_name, c.course_description, s.selection_id, s.semester, s.location, s.capacity
+SELECT c.course_name, c.course_description, s.section_id, s.semester, s.location, s.capacity
 FROM Courses c
 INNER JOIN Sections s ON c.course_id = s.course_id;
 
