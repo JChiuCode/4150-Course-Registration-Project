@@ -29,6 +29,9 @@
           <li class="nav-item">
             <a class="nav-link <?php echo ($current_page == 'users.php') ? 'active' : ''; ?>" href="./users.php">Users</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link <?php echo ($current_page == 'create.php') ? 'active' : ''; ?>" href="./create.php">Create</a>
+          </li>
         <?php endif; ?>
 
         <li class="nav-item">
