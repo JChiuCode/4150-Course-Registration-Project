@@ -1,0 +1,45 @@
+.name-container {
+  margin: 1em;
+  font-size: large;
+}
+
+.wrapper-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title-container {
+  width: 80%;
+  margin-top: 3em;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+.content-container {
+  width: 80%;
+  display: flex;
+  gap: 2em;
+  margin-bottom: 5em;
+}
+
+.form-container {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.table-container {
+  flex: 2;
+}
+
+@media (max-width: 900px) {
+  .content-container {
+    flex-direction: column;
+  }
+  .form-container,
+  .table-container {
+    width: 100%;
+  }
+}
