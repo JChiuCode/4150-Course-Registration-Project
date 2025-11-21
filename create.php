@@ -42,7 +42,7 @@
             //Database Validation
             //Instructor ID Check
             if (!isset($errors['instructor_id'])) {
-                $stmt = $conn->prepare("SELECT COUNT(*) FROM instructors WHERE instructor_id = ?");
+                $stmt = $conn->prepare("SELECT COUNT(*) FROM Instructors WHERE instructor_id = ?");
                 $stmt->bind_param("i", $_POST['instructor_id']);
                 $stmt->execute();
                 $stmt->bind_result($count);
@@ -55,7 +55,7 @@
             }
 
             //Course Code Check and Parse
-            $stmt = $conn->prepare("SELECT course_id FROM courses WHERE course_name = ?");
+            $stmt = $conn->prepare("SELECT course_id FROM Courses WHERE course_name = ?");
             $stmt->bind_param("s", $course_code);
             $stmt->execute();
             $stmt->bind_result($course_id);
@@ -74,7 +74,7 @@
 
             //Error validation and INSERT
             if (empty($errors)) {
-                $stmt = $conn->prepare('INSERT INTO sections (instructor_id, course_id, location, semester, capacity, start_time, end_time, days) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+                $stmt = $conn->prepare('INSERT INTO Sections (instructor_id, course_id, location, semester, capacity, start_time, end_time, days) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
                 $stmt->bind_param('iississs', $instructor_id, $course_id, $location, $semester, $capacity, $start_time, $end_time, $daysStr);
                 if ($stmt->execute()) {
                     $sectionMessage = "Section Created Successfully";
@@ -109,7 +109,7 @@
             }
 
             //Course code check
-            $stmt = $conn->prepare("SELECT COUNT(*) FROM courses WHERE course_name = ?");
+            $stmt = $conn->prepare("SELECT COUNT(*) FROM Courses WHERE course_name = ?");
             $stmt->bind_param("s", $course_code);
             $stmt->execute();
             $stmt->bind_result($count);
@@ -122,7 +122,7 @@
 
             //Only insert if no errors
             if (empty($errors)) {
-                $stmt = $conn->prepare("INSERT INTO courses (course_description, course_name, credits) VALUES (?, ?, ?)");
+                $stmt = $conn->prepare("INSERT INTO Courses (course_description, course_name, credits) VALUES (?, ?, ?)");
                 $stmt->bind_param("ssi", $course_name, $course_code, $credits);
                 if ($stmt->execute()) {
                     $courseMessage = "Course created successfully";
@@ -135,13 +135,13 @@
     }
     $stmt = $conn->prepare("
         SELECT I.instructor_id, CONCAT(U.first_name, ' ', U.last_name) AS instructor_name
-        FROM instructors I
-        JOIN users U ON I.instructor_id = U.user_id;");
+        FROM Instructors I
+        JOIN Users U ON I.instructor_id = U.user_id;");
     $stmt->execute();
     $instructors_result = $stmt->get_result();
     $stmt->close();
 
-    $stmt = $conn->prepare("SELECT course_name FROM courses;");
+    $stmt = $conn->prepare("SELECT course_name FROM Courses;");
     $stmt->execute();
     $courses_result = $stmt->get_result();
     $stmt->close();

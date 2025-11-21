@@ -207,10 +207,10 @@ BEGIN
                CONCAT(S.start_time, ' - ', S.end_time) AS duration, 
                C.credits, 
                CONCAT(COUNT(E.student_id), '/', S.capacity) AS capacity
-        FROM courses C
-        INNER JOIN sections S ON C.course_id = S.course_id
-        INNER JOIN users U ON U.user_id = S.instructor_id
-        LEFT JOIN enrollments E ON S.section_id = E.section_id
+        FROM Courses C
+        INNER JOIN Sections S ON C.course_id = S.course_id
+        INNER JOIN Users U ON U.user_id = S.instructor_id
+        LEFT JOIN Enrollments E ON S.section_id = E.section_id
         WHERE C.course_name LIKE CONCAT('%', input_course_name, '%')
         GROUP BY C.course_id, C.course_name, C.course_description, S.location, S.capacity, S.days, S.start_time, S.end_time, S.section_id, U.first_name, U.last_name, C.credits
         ORDER BY C.course_name;
@@ -220,10 +220,10 @@ BEGIN
                CONCAT(S.start_time, ' - ', S.end_time) AS duration, 
                C.credits, 
                CONCAT(COUNT(E.student_id), '/', S.capacity) AS capacity
-        FROM courses C
-        INNER JOIN sections S ON C.course_id = S.course_id
-        INNER JOIN users U ON U.user_id = S.instructor_id
-        LEFT JOIN enrollments E ON S.section_id = E.section_id
+        FROM Courses C
+        INNER JOIN Sections S ON C.course_id = S.course_id
+        INNER JOIN Users U ON U.user_id = S.instructor_id
+        LEFT JOIN Enrollments E ON S.section_id = E.section_id
         GROUP BY C.course_id, C.course_name, C.course_description, S.location, S.capacity, S.days, S.start_time, S.end_time, S.section_id, U.first_name, U.last_name, C.credits
         ORDER BY C.course_name;
     END IF;
@@ -236,14 +236,14 @@ BEGIN
            CONCAT(S.start_time, ' - ', S.end_time) AS duration, S.section_id, 
            CONCAT(U.first_name, ' ', U.last_name) AS instructor_name, C.credits, 
            CONCAT(COUNT(E.student_id), '/', S.capacity) AS capacity
-    FROM courses C
-    INNER JOIN sections S ON C.course_id = S.course_id
-    LEFT JOIN enrollments E ON S.section_id = E.section_id
-    LEFT JOIN instructors I ON S.instructor_id = I.instructor_id
-    LEFT JOIN users U ON I.instructor_id = U.user_id
+    FROM Courses C
+    INNER JOIN Sections S ON C.course_id = S.course_id
+    LEFT JOIN Enrollments E ON S.section_id = E.section_id
+    LEFT JOIN Instructors I ON S.instructor_id = I.instructor_id
+    LEFT JOIN Users U ON I.instructor_id = U.user_id
     WHERE S.section_id IN (
         SELECT section_id 
-        FROM enrollments 
+        FROM Enrollments 
         WHERE student_id = input_student_id
     )
     GROUP BY C.course_id, C.course_name, C.course_description, S.location, S.days, S.start_time, S.end_time, S.section_id, S.capacity, U.first_name, U.last_name, C.credits
@@ -271,7 +271,7 @@ BEGIN
         GROUP BY W1.waitlist_id
     ) AS wl_position ON W.waitlist_id = wl_position.waitlist_id
     WHERE W.student_id = input_student_id
-    ORDER BY s.semester, c.course_name;
+    ORDER BY S.semester, C.course_name;
 END $$
 
 /* Get Waitist information by instructor_id */
@@ -296,7 +296,7 @@ BEGIN
         GROUP BY W1.waitlist_id
     ) AS wl_position ON W.waitlist_id = wl_position.waitlist_id
     WHERE S.instructor_id = input_instructor_id
-    ORDER BY s.semester, c.course_name;
+    ORDER BY S.semester, C.course_name;
 END $$
 
 /* Get Waitist for Everyone */
@@ -320,17 +320,17 @@ BEGIN
             AND W2.joined_at <= W1.joined_at
         GROUP BY W1.waitlist_id
     ) AS wl_position ON W.waitlist_id = wl_position.waitlist_id
-    ORDER BY s.semester, c.course_name;
+    ORDER BY S.semester, C.course_name;
 END $$
 
 /* Gets all the courses that an instructor teaches */
 CREATE PROCEDURE GetCoursesByInstructorID(IN input_instructor_id INT)
 BEGIN
     SELECT C.course_id, C.course_name, C.course_description, S.location, S.days, S.start_time, S.end_time, S.section_id, CONCAT(U.first_name, ' ', U.last_name) AS instructor_name, CONCAT(S.start_time, ' - ', S.end_time) AS duration, C.credits, CONCAT(COUNT(E.student_id), '/', S.capacity) AS capacity
-    FROM courses C
-    INNER JOIN sections S ON C.course_id = S.course_id
-    INNER JOIN users U ON U.user_id = S.instructor_id
-    LEFT JOIN enrollments E ON S.section_id = E.section_id
+    FROM Courses C
+    INNER JOIN Sections S ON C.course_id = S.course_id
+    INNER JOIN Users U ON U.user_id = S.instructor_id
+    LEFT JOIN Enrollments E ON S.section_id = E.section_id
     WHERE S.instructor_id = input_instructor_id
     GROUP BY C.course_id, C.course_name, C.course_description, S.location, S.capacity, S.days, S.start_time, S.end_time, S.section_id, U.first_name, U.last_name, C.credits
     ORDER BY C.course_name;
