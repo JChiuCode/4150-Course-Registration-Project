@@ -39,6 +39,10 @@
   </div>
 </nav>
 
+<!-- Login information for the GA to test the webstie -->
+<p>Instructor email = X.Yuan@uwindsor.ca | Instructor password = pass321</p>
+<p>Admin email = admin@uwindsor.ca | Admin password = admin123</p>
+
     <div class="main-container">
         <form action="index.php" method="post" class="form">
             <h1>Login</h1>

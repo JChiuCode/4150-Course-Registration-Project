@@ -133,6 +133,18 @@
             }
         }
     }
+    $stmt = $conn->prepare("
+        SELECT I.instructor_id, CONCAT(U.first_name, ' ', U.last_name) AS instructor_name
+        FROM instructors I
+        JOIN users U ON I.instructor_id = U.user_id;");
+    $stmt->execute();
+    $instructors_result = $stmt->get_result();
+    $stmt->close();
+
+    $stmt = $conn->prepare("SELECT course_name FROM courses;");
+    $stmt->execute();
+    $courses_result = $stmt->get_result();
+    $stmt->close();
 ?>
 
 <body>
@@ -179,7 +191,13 @@
 
             <div class="mb-3">
                 <label class="form-label">Instructor ID</label>
-                <input type="number" class="form-control" name="instructor_id" required>
+                <select type="number" name="instructor_id" class="form-select" required>
+                    <?php if ($instructors_result->num_rows > 0): ?>
+                        <?php while ($row = $instructors_result->fetch_assoc()): ?>
+                            <option value='<?php echo $row['instructor_id']; ?>'><?php echo $row['instructor_name']; ?></option>
+                        <?php endwhile; ?>
+                    <?php endif; ?>
+                </select>
                 <?php if(isset($errors['instructor_id'])): ?>
                     <div class="text-danger mt-1"><?= $errors['instructor_id'] ?></div>
                 <?php endif; ?>
@@ -187,7 +205,13 @@
 
             <div class="mb-3">
                 <label class="form-label">Course Code</label>
-                <input type="text" class="form-control" name="course_code_a" required>
+                <select type="number" name="course_code_a" class="form-select" required>
+                    <?php if ($courses_result->num_rows > 0): ?>
+                        <?php while ($row = $courses_result->fetch_assoc()): ?>
+                            <option value='<?php echo $row['course_name']; ?>'><?php echo $row['course_name']; ?></option>
+                        <?php endwhile; ?>
+                    <?php endif; ?>
+                </select>
                 <?php if(isset($errors['course_code_a'])): ?>
                     <div class="text-danger mt-1"><?= $errors['course_code_a'] ?></div>
                 <?php endif; ?>
