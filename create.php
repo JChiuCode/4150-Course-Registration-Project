@@ -205,7 +205,7 @@
 
             <div class="mb-3">
                 <label class="form-label">Course Code</label>
-                <select type="number" name="course_code_a" class="form-select" required>
+                <select type="text" name="course_code_a" class="form-select" required>
                     <?php if ($courses_result->num_rows > 0): ?>
                         <?php while ($row = $courses_result->fetch_assoc()): ?>
                             <option value='<?php echo $row['course_name']; ?>'><?php echo $row['course_name']; ?></option>
@@ -287,7 +287,7 @@
 
             <div class="mb-3">
                 <label class="form-label">Credits</label>
-                <input type="number" class="form-control" name="credits" required>
+                <input type="number" class="form-control" name="credits" max="3.00" value="3.00" required>
                 <?php if(isset($errors['credits'])): ?>
                     <div class="text-danger mt-1"><?= $errors['credits'] ?></div>
                 <?php endif; ?>
